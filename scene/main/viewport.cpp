@@ -278,6 +278,7 @@ void Viewport::_notification(int p_what) {
 			current_canvas = find_world_2d()->get_canvas();
 			VisualServer::get_singleton()->viewport_set_scenario(viewport, find_world()->get_scenario());
 			VisualServer::get_singleton()->viewport_attach_canvas(viewport, current_canvas);
+			VisualServer::get_singleton()->viewport_set_canvas_layer_mask(viewport, canvas_cull_mask);
 
 			_update_listener();
 			_update_listener_2d();
@@ -1016,11 +1017,6 @@ bool Viewport::has_transparent_background() const {
 
 void Viewport::set_world_2d(const Ref<World2D> &p_world_2d) {
 	if (world_2d == p_world_2d) {
-		return;
-	}
-
-	if (parent && parent->find_world_2d() == p_world_2d) {
-		WARN_PRINT("Unable to use parent world as world_2d");
 		return;
 	}
 
@@ -3208,6 +3204,30 @@ void Viewport::_validate_property(PropertyInfo &property) const {
 	}
 }
 
+void Viewport::set_canvas_cull_mask(int p_layers) {
+	canvas_cull_mask = p_layers;
+	VisualServer::get_singleton()->viewport_set_canvas_layer_mask(viewport, canvas_cull_mask);
+}
+
+int Viewport::get_canvas_cull_mask() const {
+
+	return canvas_cull_mask;
+}
+
+void Viewport::set_canvas_cull_mask_bit(int p_layer, bool p_enable) {
+	ERR_FAIL_INDEX(p_layer, 32);
+	if (p_enable) {
+		set_canvas_cull_mask(canvas_cull_mask | (1 << p_layer));
+	} else {
+		set_canvas_cull_mask(canvas_cull_mask & (~(1 << p_layer)));
+	}
+}
+
+bool Viewport::get_canvas_cull_mask_bit(int p_layer) const {
+	ERR_FAIL_INDEX_V(p_layer, 32, false);
+	return (canvas_cull_mask & (1 << p_layer));
+}
+
 void Viewport::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_use_arvr", "use"), &Viewport::set_use_arvr);
 	ClassDB::bind_method(D_METHOD("use_arvr"), &Viewport::use_arvr);
@@ -3342,6 +3362,11 @@ void Viewport::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("_subwindow_visibility_changed"), &Viewport::_subwindow_visibility_changed);
 
+	ClassDB::bind_method(D_METHOD("set_canvas_cull_mask", "mask"), &Viewport::set_canvas_cull_mask);
+	ClassDB::bind_method(D_METHOD("get_canvas_cull_mask"), &Viewport::get_canvas_cull_mask);
+
+	ClassDB::bind_method(D_METHOD("set_canvas_cull_mask_bit", "layer", "enable"), &Viewport::set_canvas_cull_mask_bit);
+	ClassDB::bind_method(D_METHOD("get_canvas_cull_mask_bit", "layer"), &Viewport::get_canvas_cull_mask_bit);
 	ClassDB::bind_method(D_METHOD("_own_world_changed"), &Viewport::_own_world_changed);
 
 	ClassDB::bind_method(D_METHOD("_process_picking", "ignore_paused"), &Viewport::_process_picking);
@@ -3388,6 +3413,7 @@ void Viewport::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::TRANSFORM2D, "canvas_transform", PROPERTY_HINT_NONE, "", 0), "set_canvas_transform", "get_canvas_transform");
 	ADD_PROPERTY(PropertyInfo(Variant::TRANSFORM2D, "global_canvas_transform", PROPERTY_HINT_NONE, "", 0), "set_global_canvas_transform", "get_global_canvas_transform");
 
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "canvas_cull_mask", PROPERTY_HINT_LAYERS_2D_RENDER), "set_canvas_cull_mask", "get_canvas_cull_mask");
 	ADD_SIGNAL(MethodInfo("size_changed"));
 	ADD_SIGNAL(MethodInfo("gui_focus_changed", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Control")));
 
@@ -3537,6 +3563,7 @@ Viewport::Viewport() {
 	local_input_handled = false;
 	handle_input_locally = true;
 	physics_last_id = 0; //ensures first time there will be a check
+	canvas_cull_mask = 0xfffff; // by default show everything
 }
 
 Viewport::~Viewport() {
