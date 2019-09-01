@@ -586,6 +586,14 @@ public:
 	bool gui_is_dragging() const;
 	bool gui_is_drag_successful() const;
 
+	int canvas_cull_mask;
+
+	void set_canvas_cull_mask(int p_layers);
+	int get_canvas_cull_mask() const;
+
+	void set_canvas_cull_mask_bit(int p_layer, bool p_enable);
+	bool get_canvas_cull_mask_bit(int p_layer) const;
+
 	Viewport();
 	~Viewport();
 };

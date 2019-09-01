@@ -228,7 +228,7 @@ void VisualServerViewport::_draw_viewport(Viewport *p_viewport, ARVRInterface::E
 				ptr = ptr->filter_next_ptr;
 			}
 
-			VSG::canvas->render_canvas(canvas, xform, canvas_lights, lights_with_mask, clip_rect, canvas_layer_id);
+			VSG::canvas->render_canvas(canvas, xform, canvas_lights, lights_with_mask, clip_rect, canvas_layer_id, p_viewport->canvas_layer_mask);
 
 			if (scenario_draw_canvas_bg && E->key().get_layer() >= scenario_canvas_max_layer) {
 				if (!can_draw_3d) {
@@ -744,6 +744,12 @@ bool VisualServerViewport::free(RID p_rid) {
 
 void VisualServerViewport::set_default_clear_color(const Color &p_color) {
 	clear_color = p_color;
+}
+
+void VisualServerViewport::viewport_set_canvas_layer_mask(RID p_viewport, int mask) {
+	Viewport *viewport = viewport_owner.getornull(p_viewport);
+	ERR_FAIL_COND(!viewport);
+	viewport->canvas_layer_mask = mask;
 }
 
 VisualServerViewport::VisualServerViewport() {

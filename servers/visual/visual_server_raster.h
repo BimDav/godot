@@ -520,6 +520,7 @@ public:
 	BIND2(viewport_set_hdr, RID, bool)
 	BIND2(viewport_set_use_32_bpc_depth, RID, bool)
 	BIND2(viewport_set_usage, RID, ViewportUsage)
+	BIND2(viewport_set_canvas_layer_mask, RID, int)
 
 	BIND2R(int, viewport_get_render_info, RID, ViewportRenderInfo)
 	BIND2(viewport_set_debug_draw, RID, ViewportDebugDraw)
@@ -685,6 +686,7 @@ public:
 
 	BIND2(canvas_item_set_visible, RID, bool)
 	BIND2(canvas_item_set_light_mask, RID, int)
+	BIND2(canvas_item_set_layer_mask, RID, int)
 
 	BIND2(canvas_item_set_update_when_visible, RID, bool)
 
