@@ -81,6 +81,7 @@ private:
 	List<CanvasItem *>::Element *C = nullptr;
 
 	int light_mask = 1;
+	int layers = 1;
 
 	Window *window = nullptr;
 	bool first_draw = false;
@@ -212,6 +213,12 @@ public:
 
 	void set_self_modulate(const Color &p_self_modulate);
 	Color get_self_modulate() const;
+
+	void set_layer_mask(int p_mask);
+	int get_layer_mask() const;
+
+	void set_layer_mask_bit(int p_layer, bool p_enable);
+	bool get_layer_mask_bit(int p_layer) const;
 
 	/* DRAWING API */
 

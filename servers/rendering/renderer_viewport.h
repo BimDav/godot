@@ -104,6 +104,8 @@ public:
 
 		bool transparent_bg;
 
+		int canvas_layer_mask;
+
 		struct CanvasKey {
 			int64_t stacking;
 			RID canvas;
@@ -237,6 +239,8 @@ public:
 
 	void viewport_set_global_canvas_transform(RID p_viewport, const Transform2D &p_transform);
 	void viewport_set_canvas_stacking(RID p_viewport, RID p_canvas, int p_layer, int p_sublayer);
+
+	void viewport_set_canvas_layer_mask(RID p_viewport, int mask);
 
 	void viewport_set_shadow_atlas_size(RID p_viewport, int p_size, bool p_16_bits = false);
 	void viewport_set_shadow_atlas_quadrant_subdivision(RID p_viewport, int p_quadrant, int p_subdiv);

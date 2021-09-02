@@ -768,6 +768,7 @@ public:
 	virtual void viewport_set_size(RID p_viewport, int p_width, int p_height) = 0;
 	virtual void viewport_set_active(RID p_viewport, bool p_active) = 0;
 	virtual void viewport_set_parent_viewport(RID p_viewport, RID p_parent_viewport) = 0;
+	virtual void viewport_set_canvas_layer_mask(RID p_viewport, int mask) = 0;
 
 	virtual void viewport_attach_to_screen(RID p_viewport, const Rect2 &p_rect = Rect2(), DisplayServer::WindowID p_screen = DisplayServer::MAIN_WINDOW_ID) = 0;
 	virtual void viewport_set_render_direct_to_screen(RID p_viewport, bool p_enable) = 0;
@@ -1242,6 +1243,7 @@ public:
 	virtual void canvas_item_set_custom_rect(RID p_item, bool p_custom_rect, const Rect2 &p_rect = Rect2()) = 0;
 	virtual void canvas_item_set_modulate(RID p_item, const Color &p_color) = 0;
 	virtual void canvas_item_set_self_modulate(RID p_item, const Color &p_color) = 0;
+	virtual void canvas_item_set_layer_mask(RID p_item, int p_mask) = 0;
 
 	virtual void canvas_item_set_draw_behind_parent(RID p_item, bool p_enable) = 0;
 

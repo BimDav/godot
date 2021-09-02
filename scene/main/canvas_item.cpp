@@ -239,6 +239,7 @@ void CanvasItem::_enter_canvas() {
 		}
 
 		RenderingServer::get_singleton()->canvas_item_set_parent(canvas_item, canvas);
+		RenderingServer::get_singleton()->canvas_item_set_layer_mask(canvas_item, layers);
 
 		group = "root_canvas" + itos(canvas.get_id());
 
@@ -256,6 +257,7 @@ void CanvasItem::_enter_canvas() {
 		canvas_layer = parent->canvas_layer;
 		RenderingServer::get_singleton()->canvas_item_set_parent(canvas_item, parent->get_canvas_item());
 		RenderingServer::get_singleton()->canvas_item_set_draw_index(canvas_item, get_index());
+		RenderingServer::get_singleton()->canvas_item_set_layer_mask(canvas_item, layers);
 	}
 
 	pending_update = false;
@@ -930,6 +932,11 @@ void CanvasItem::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("make_canvas_position_local", "screen_point"), &CanvasItem::make_canvas_position_local);
 	ClassDB::bind_method(D_METHOD("make_input_local", "event"), &CanvasItem::make_input_local);
 
+	ClassDB::bind_method(D_METHOD("set_layer_mask", "mask"), &CanvasItem::set_layer_mask);
+	ClassDB::bind_method(D_METHOD("get_layer_mask"), &CanvasItem::get_layer_mask);
+	ClassDB::bind_method(D_METHOD("set_layer_mask_bit", "layer", "enabled"), &CanvasItem::set_layer_mask_bit);
+	ClassDB::bind_method(D_METHOD("get_layer_mask_bit", "layer"), &CanvasItem::get_layer_mask_bit);
+
 	ClassDB::bind_method(D_METHOD("set_texture_filter", "mode"), &CanvasItem::set_texture_filter);
 	ClassDB::bind_method(D_METHOD("get_texture_filter"), &CanvasItem::get_texture_filter);
 
@@ -950,6 +957,7 @@ void CanvasItem::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "show_on_top", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "_set_on_top", "_is_on_top"); //compatibility
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "clip_children"), "set_clip_children", "is_clipping_children");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "light_mask", PROPERTY_HINT_LAYERS_2D_RENDER), "set_light_mask", "get_light_mask");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "layers", PROPERTY_HINT_LAYERS_2D_RENDER), "set_layer_mask", "get_layer_mask");
 
 	ADD_GROUP("Texture", "texture_");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_filter", PROPERTY_HINT_ENUM, "Inherit,Nearest,Linear,Nearest Mipmap,Linear Mipmap,Nearest Mipmap Aniso.,Linear Mipmap Aniso."), "set_texture_filter", "get_texture_filter");
@@ -1045,6 +1053,29 @@ int CanvasItem::get_canvas_layer() const {
 	} else {
 		return 0;
 	}
+}
+
+void CanvasItem::set_layer_mask(int p_mask) {
+	layers = p_mask;
+	RenderingServer::get_singleton()->canvas_item_set_layer_mask(canvas_item, layers);
+}
+
+int CanvasItem::get_layer_mask() const {
+	return layers;
+}
+
+void CanvasItem::set_layer_mask_bit(int p_layer, bool p_enable) {
+	ERR_FAIL_INDEX(p_layer, 32);
+	if (p_enable) {
+		set_layer_mask(layers | (1 << p_layer));
+	} else {
+		set_layer_mask(layers & (~(1 << p_layer)));
+	}
+}
+
+bool CanvasItem::get_layer_mask_bit(int p_layer) const {
+	ERR_FAIL_INDEX_V(p_layer, 32, false);
+	return (layers & (1 << p_layer));
 }
 
 void CanvasItem::_update_texture_filter_changed(bool p_propagate) {
