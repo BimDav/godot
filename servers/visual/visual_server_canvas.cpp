@@ -98,6 +98,9 @@ void VisualServerCanvas::_render_canvas_item(Item *p_canvas_item, const Transfor
 	}
 
 	Rect2 rect = ci->get_rect();
+	if (ci->extra_visibility_margin > 0) {
+		rect.grow_by(ci->extra_visibility_margin);
+	}
 	Transform2D xform = ci->xform;
 	xform = p_transform * xform;
 
@@ -965,6 +968,13 @@ void VisualServerCanvas::canvas_item_set_draw_index(RID p_item, int p_index) {
 		canvas->children_order_dirty = true;
 		return;
 	}
+}
+
+void VisualServerCanvas::canvas_item_set_extra_visibility_margin(RID p_item, float p_margin) {
+	Item *canvas_item = canvas_item_owner.get(p_item);
+	ERR_FAIL_COND(!canvas_item);
+
+	canvas_item->extra_visibility_margin = p_margin;
 }
 
 void VisualServerCanvas::canvas_item_set_material(RID p_item, RID p_material) {

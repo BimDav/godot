@@ -624,6 +624,8 @@ public:
 	FUNC1(canvas_item_clear, RID)
 	FUNC2(canvas_item_set_draw_index, RID, int)
 
+	FUNC2(canvas_item_set_extra_visibility_margin, RID, float)
+
 	FUNC2(canvas_item_set_material, RID, RID)
 
 	FUNC2(canvas_item_set_use_parent_material, RID, bool)
