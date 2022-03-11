@@ -1053,6 +1053,8 @@ public:
 
 	virtual void canvas_item_set_material(RID p_item, RID p_material) = 0;
 
+	virtual void canvas_item_set_extra_visibility_margin(RID p_item, float p_margin) = 0;
+
 	virtual void canvas_item_set_use_parent_material(RID p_item, bool p_enable) = 0;
 
 	virtual RID canvas_light_create() = 0;
