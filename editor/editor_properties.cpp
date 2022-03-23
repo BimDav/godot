@@ -30,6 +30,7 @@
 
 #include "editor_properties.h"
 
+#include "core/math/expression.h"
 #include "editor/editor_resource_preview.h"
 #include "editor/filesystem_dock.h"
 #include "editor_node.h"
@@ -956,11 +957,93 @@ EditorPropertyLayers::EditorPropertyLayers() {
 
 ///////////////////// INT /////////////////////////
 
-void EditorPropertyInteger::_value_changed(int64_t val) {
+class TooltipPanel : public PanelContainer {
+	GDCLASS(TooltipPanel, PanelContainer);
+
+public:
+	TooltipPanel(){};
+};
+
+class TooltipLabel : public Label {
+	GDCLASS(TooltipLabel, Label);
+
+public:
+	TooltipLabel(){};
+};
+
+Control *FixedEditorSpinSlider::make_custom_tooltip(const String &p_text) const {
+	String text = vformat("%s\nFloat: %s", get_value(), get_value() / 65536.);
+	TooltipPanel *tooltip_popup = memnew(TooltipPanel);
+	TooltipLabel *tooltip_label = memnew(TooltipLabel);
+	tooltip_popup->add_child(tooltip_label);
+
+	Ref<StyleBox> ttp = tooltip_label->get_stylebox("panel", "TooltipPanel");
+
+	tooltip_label->set_anchor_and_margin(MARGIN_LEFT, Control::ANCHOR_BEGIN, ttp->get_margin(MARGIN_LEFT));
+	tooltip_label->set_anchor_and_margin(MARGIN_TOP, Control::ANCHOR_BEGIN, ttp->get_margin(MARGIN_TOP));
+	tooltip_label->set_anchor_and_margin(MARGIN_RIGHT, Control::ANCHOR_END, -ttp->get_margin(MARGIN_RIGHT));
+	tooltip_label->set_anchor_and_margin(MARGIN_BOTTOM, Control::ANCHOR_END, -ttp->get_margin(MARGIN_BOTTOM));
+	tooltip_label->set_text(text);
+	return tooltip_popup;
+}
+
+FixedEditorSpinSlider::FixedEditorSpinSlider() {
+	set_step(0);
+	set_allow_greater(true);
+	set_allow_lesser(true);
+	get_line_edit()->disconnect("focus_exited", this, "_value_focus_exited");
+	get_line_edit()->connect("focus_exited", this, "_value_focus_exited_fixed");
+}
+
+void FixedEditorSpinSlider::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("_value_focus_exited_fixed"), &FixedEditorSpinSlider::_value_focus_exited);
+}
+
+void FixedEditorSpinSlider::_value_focus_exited() {
+	LineEdit *value_input = get_line_edit();
+	// discontinue because the focus_exit was caused by right-click context menu
+	if (value_input->get_menu()->is_visible()) {
+		return;
+	}
+
+	_evaluate_input_text();
+}
+
+void FixedEditorSpinSlider::_evaluate_input_text() {
+	LineEdit *value_input = get_line_edit();
+	// Replace comma with dot to support it as decimal separator (GH-6028).
+	// This prevents using functions like `pow()`, but using functions
+	// in EditorSpinSlider is a barely known (and barely used) feature.
+	// Instead, we'd rather support German/French keyboard layouts out of the box.
+	const String text = value_input->get_text().replace(",", ".");
+
+	Ref<Expression> expr;
+	expr.instance();
+	Error err = expr->parse(text);
+	if (err != OK) {
+		return;
+	}
+
+	Variant v = expr->execute(Array(), nullptr, false);
+	if (v.get_type() == Variant::NIL) {
+		return;
+	} else if (v.get_type() == Variant::REAL) {
+		v = (int)((real_t)v * 65536);
+	}
+	set_value(v);
+}
+
+void EditorPropertyInteger::_value_changed(double val) {
 	if (setting) {
 		return;
 	}
-	emit_changed(get_edited_property(), val);
+	emit_changed(get_edited_property(), (int)val);
+	// if ((int) val == val) {
+	// 	emit_changed(get_edited_property(), (int) val);
+	// }
+	// else {
+	// 	emit_changed(get_edited_property(), (int)((real_t)val * 65536));
+	// }
 }
 
 void EditorPropertyInteger::update_property() {
@@ -989,7 +1072,7 @@ void EditorPropertyInteger::setup(int64_t p_min, int64_t p_max, int64_t p_step, 
 }
 
 EditorPropertyInteger::EditorPropertyInteger() {
-	spin = memnew(EditorSpinSlider);
+	spin = memnew(FixedEditorSpinSlider);
 	spin->set_flat(true);
 	add_child(spin);
 	add_focusable(spin);

@@ -260,11 +260,25 @@ public:
 	EditorPropertyLayers();
 };
 
+class FixedEditorSpinSlider : public EditorSpinSlider {
+	GDCLASS(FixedEditorSpinSlider, EditorSpinSlider);
+
+	void _evaluate_input_text();
+
+protected:
+	static void _bind_methods();
+
+public:
+	Control *make_custom_tooltip(const String &p_text) const override;
+	void _value_focus_exited();
+	FixedEditorSpinSlider();
+};
+
 class EditorPropertyInteger : public EditorProperty {
 	GDCLASS(EditorPropertyInteger, EditorProperty);
-	EditorSpinSlider *spin;
+	FixedEditorSpinSlider *spin;
 	bool setting;
-	void _value_changed(int64_t p_val);
+	void _value_changed(double p_val);
 
 protected:
 	static void _bind_methods();
