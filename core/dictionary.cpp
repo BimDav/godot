@@ -231,6 +231,35 @@ uint32_t Dictionary::recursive_hash(int p_recursion_count) const {
 	return h;
 }
 
+uint32_t Dictionary::hash_special() const {
+	uint32_t h = hash_djb2_one_32(Variant::DICTIONARY);
+
+	for (OrderedHashMap<Variant, Variant, VariantHasher, VariantComparator>::Element E = _p->variant_map.front(); E; E = E.next()) {
+		Variant::Type type_key = E.key().get_type();
+		if (type_key == Variant::STRING) {
+			String key(E.key());
+			if (key[0] == '_' || key[0] == '$') {
+				continue;
+			}
+		} else if (type_key == Variant::INT) {
+			int key(E.key());
+			if (key < 0) {
+				continue;
+			}
+		}
+		h = hash_djb2_one_32(E.key().hash(), h);
+
+		Variant::Type type_value = E.value().get_type();
+		if (type_value == Variant::DICTIONARY) {
+			h = hash_djb2_one_32(Dictionary(E.value()).hash_special(), h);
+		} else {
+			h = hash_djb2_one_32(E.value().hash(), h);
+		}
+	}
+
+	return h;
+}
+
 Array Dictionary::keys() const {
 	Array varr;
 	if (_p->variant_map.empty()) {
