@@ -74,6 +74,7 @@ public:
 	bool operator!=(const Dictionary &p_dictionary) const;
 
 	uint32_t hash() const;
+	uint32_t hash_special() const;
 	void operator=(const Dictionary &p_dictionary);
 
 	const Variant *next(const Variant *p_key = nullptr) const;
