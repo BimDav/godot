@@ -923,20 +923,20 @@ void CanvasItem::_notify_transform(CanvasItem *p_node) {
 
 	p_node->global_invalid = true;
 
-	if (p_node->notify_transform && !p_node->xform_change.in_list()) {
-		if (!p_node->block_transform_notify) {
-			if (p_node->is_inside_tree()) {
-				get_tree()->xform_change_list.add(&p_node->xform_change);
-			}
-		}
-	}
-
 	for (List<CanvasItem *>::Element *E = p_node->children_items.front(); E; E = E->next()) {
 		CanvasItem *ci = E->get();
 		if (ci->toplevel) {
 			continue;
 		}
 		_notify_transform(ci);
+	}
+
+	if (p_node->notify_transform && !p_node->xform_change.in_list()) {
+		if (!p_node->block_transform_notify) {
+			if (p_node->is_inside_tree()) {
+				get_tree()->xform_change_list.add(&p_node->xform_change);
+			}
+		}
 	}
 }
 
