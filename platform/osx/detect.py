@@ -83,8 +83,8 @@ def configure(env):
         env.Append(LINKFLAGS=["-arch", "arm64", "-mmacosx-version-min=11.0"])
     else:
         print("Building for macOS 10.12+, platform x86-64.")
-        env.Append(CCFLAGS=["-arch", "x86_64", "-mmacosx-version-min=10.12"])
-        env.Append(LINKFLAGS=["-arch", "x86_64", "-mmacosx-version-min=10.12"])
+        env.Append(CCFLAGS=["-arch", "x86_64", "-mmacosx-version-min=10.15"])
+        env.Append(LINKFLAGS=["-arch", "x86_64", "-mmacosx-version-min=10.15"])
 
     cc_version = get_compiler_version(env) or [-1, -1]
     vanilla = is_vanilla_clang(env)
