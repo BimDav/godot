@@ -1053,7 +1053,7 @@ public:
 
 	virtual void canvas_item_set_material(RID p_item, RID p_material) = 0;
 
-	virtual void canvas_item_set_extra_visibility_margin(RID p_item, float p_margin) = 0;
+	virtual void canvas_item_set_extra_visibility_margin(RID p_item, float p_margin_bottom, float p_margin_side, float p_margin_top) = 0;
 
 	virtual void canvas_item_set_use_parent_material(RID p_item, bool p_enable) = 0;
 
