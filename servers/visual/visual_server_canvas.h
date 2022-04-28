@@ -52,7 +52,9 @@ public:
 		Transform2D ysort_xform;
 		Vector2 ysort_pos;
 		int ysort_index;
-		float extra_visibility_margin = 0.;
+		float extra_visibility_margin_bottom = 0.;
+		float extra_visibility_margin_side = 0.;
+		float extra_visibility_margin_top = 0.;
 
 		Vector<Item *> child_items;
 
@@ -213,7 +215,7 @@ public:
 	void canvas_item_clear(RID p_item);
 	void canvas_item_set_draw_index(RID p_item, int p_index);
 
-	void canvas_item_set_extra_visibility_margin(RID p_item, float p_material);
+	void canvas_item_set_extra_visibility_margin(RID p_item, float p_margin_bottom, float p_margin_side, float p_margin_top);
 
 	void canvas_item_set_material(RID p_item, RID p_material);
 
