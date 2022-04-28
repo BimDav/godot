@@ -98,8 +98,8 @@ void VisualServerCanvas::_render_canvas_item(Item *p_canvas_item, const Transfor
 	}
 
 	Rect2 rect = ci->get_rect();
-	if (ci->extra_visibility_margin > 0) {
-		rect.grow_by(ci->extra_visibility_margin);
+	if (ci->extra_visibility_margin_bottom != 0 || ci->extra_visibility_margin_side != 0 || ci->extra_visibility_margin_top != 0) {
+		rect = rect.grow_individual(ci->extra_visibility_margin_side, ci->extra_visibility_margin_top, ci->extra_visibility_margin_side, ci->extra_visibility_margin_bottom);
 	}
 	Transform2D xform = ci->xform;
 	xform = p_transform * xform;
@@ -970,11 +970,13 @@ void VisualServerCanvas::canvas_item_set_draw_index(RID p_item, int p_index) {
 	}
 }
 
-void VisualServerCanvas::canvas_item_set_extra_visibility_margin(RID p_item, float p_margin) {
+void VisualServerCanvas::canvas_item_set_extra_visibility_margin(RID p_item, float p_margin_bottom, float p_margin_side, float p_margin_top) {
 	Item *canvas_item = canvas_item_owner.get(p_item);
 	ERR_FAIL_COND(!canvas_item);
 
-	canvas_item->extra_visibility_margin = p_margin;
+	canvas_item->extra_visibility_margin_bottom = p_margin_bottom;
+	canvas_item->extra_visibility_margin_side = p_margin_side;
+	canvas_item->extra_visibility_margin_top = p_margin_top;
 }
 
 void VisualServerCanvas::canvas_item_set_material(RID p_item, RID p_material) {

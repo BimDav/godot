@@ -722,7 +722,7 @@ public:
 	BIND1(canvas_item_clear, RID)
 	BIND2(canvas_item_set_draw_index, RID, int)
 
-	BIND2(canvas_item_set_extra_visibility_margin, RID, float)
+	BIND4(canvas_item_set_extra_visibility_margin, RID, float, float, float)
 
 	BIND2(canvas_item_set_material, RID, RID)
 
