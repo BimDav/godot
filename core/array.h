@@ -60,6 +60,7 @@ public:
 	bool operator==(const Array &p_array) const;
 
 	uint32_t hash() const;
+	uint32_t hash_special() const;
 	void operator=(const Array &p_array);
 
 	void push_back(const Variant &p_value);
