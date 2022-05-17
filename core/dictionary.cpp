@@ -238,7 +238,7 @@ uint32_t Dictionary::hash_special() const {
 		Variant::Type type_key = E.key().get_type();
 		if (type_key == Variant::STRING) {
 			String key(E.key());
-			if (key[0] == '_' || key[0] == '$') {
+			if (key.begins_with("_") || key == "$") {
 				continue;
 			}
 		} else if (type_key == Variant::INT) {
@@ -247,14 +247,8 @@ uint32_t Dictionary::hash_special() const {
 				continue;
 			}
 		}
-		h = hash_djb2_one_32(E.key().hash(), h);
-
-		Variant::Type type_value = E.value().get_type();
-		if (type_value == Variant::DICTIONARY) {
-			h = hash_djb2_one_32(Dictionary(E.value()).hash_special(), h);
-		} else {
-			h = hash_djb2_one_32(E.value().hash(), h);
-		}
+		h = hash_djb2_one_32(E.key().hash_special(), h);
+		h = hash_djb2_one_32(E.value().hash_special(), h);
 	}
 
 	return h;

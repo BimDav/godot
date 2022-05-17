@@ -2738,6 +2738,25 @@ uint32_t Variant::recursive_hash(int p_recursion_count) const {
 	return 0;
 }
 
+uint32_t Variant::hash_special() const {
+	switch (type) {
+		case DICTIONARY: {
+			return reinterpret_cast<const Dictionary *>(_data._mem)->hash_special();
+
+		} break;
+		case ARRAY: {
+			const Array &arr = *reinterpret_cast<const Array *>(_data._mem);
+			return arr.hash_special();
+
+		} break;
+		default: {
+			return hash();
+		}
+	}
+
+	return 0;
+}
+
 #define hash_compare_scalar(p_lhs, p_rhs) \
 	(((p_lhs) == (p_rhs)) || (Math::is_nan(p_lhs) && Math::is_nan(p_rhs)))
 

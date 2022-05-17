@@ -131,7 +131,14 @@ uint32_t Array::recursive_hash(int p_recursion_count) const {
 	}
 	return h;
 }
+uint32_t Array::hash_special() const {
+	uint32_t h = hash_djb2_one_32(0);
 
+	for (int i = 0; i < _p->array.size(); i++) {
+		h = hash_djb2_one_32(_p->array[i].hash_special(), h);
+	}
+	return h;
+}
 void Array::operator=(const Array &p_array) {
 	_ref(p_array);
 }
