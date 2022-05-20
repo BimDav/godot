@@ -607,6 +607,7 @@ void InputDefault::action_press(const StringName &p_action, float p_strength) {
 	action.idle_frame = Engine::get_singleton()->get_idle_frames();
 	action.pressed = true;
 	action.strength = p_strength;
+	action.raw_strength = p_strength;
 
 	action_state[p_action] = action;
 }
