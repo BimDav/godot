@@ -107,20 +107,29 @@ int ViewportContainer::get_stretch_shrink() const {
 	return shrink;
 }
 
+void ViewportContainer::update_child_viewports() {
+	if (!stretch) {
+		return;
+	}
+
+	for (int i = 0; i < get_child_count(); i++) {
+		Viewport *c = Object::cast_to<Viewport>(get_child(i));
+		if (!c) {
+			continue;
+		}
+
+		set_child_viewport_size(c);
+	}
+}
+
 void ViewportContainer::_notification(int p_what) {
-	if (p_what == NOTIFICATION_RESIZED || p_what == NOTIFICATION_READY) {
-		if (!stretch) {
-			return;
-		}
+	if (p_what == NOTIFICATION_RESIZED) {
+		update_child_viewports();
+	}
 
-		for (int i = 0; i < get_child_count(); i++) {
-			Viewport *c = Object::cast_to<Viewport>(get_child(i));
-			if (!c) {
-				continue;
-			}
-
-			set_child_viewport_size(c);
-		}
+	if (p_what == NOTIFICATION_READY) {
+		update_child_viewports();
+		get_tree()->connect("screen_resized", this, "update_child_viewports");
 	}
 
 	if (p_what == NOTIFICATION_ENTER_TREE || p_what == NOTIFICATION_VISIBILITY_CHANGED) {
@@ -218,6 +227,7 @@ void ViewportContainer::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_stretch_shrink", "amount"), &ViewportContainer::set_stretch_shrink);
 	ClassDB::bind_method(D_METHOD("get_stretch_shrink"), &ViewportContainer::get_stretch_shrink);
+	ClassDB::bind_method(D_METHOD("update_child_viewports"), &ViewportContainer::update_child_viewports);
 
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "stretch"), "set_stretch", "is_stretch_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "stretch_shrink"), "set_stretch_shrink", "get_stretch_shrink");
