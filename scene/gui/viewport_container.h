@@ -52,6 +52,7 @@ public:
 	void _unhandled_input(const Ref<InputEvent> &p_event);
 	void set_stretch_shrink(int p_shrink);
 	int get_stretch_shrink() const;
+	void update_child_viewports();
 
 	virtual Size2 get_minimum_size() const;
 
