@@ -65,7 +65,7 @@ private:
 
 	bool _is_point_inside(const Point2 &p_point);
 
-	void _press(int p_finger_pressed);
+	void _press(int p_finger_pressed, Vector2 position);
 	void _release(bool p_exiting_tree = false);
 
 protected:
@@ -106,6 +106,7 @@ public:
 	VisibilityMode get_visibility_mode() const;
 
 	bool is_pressed() const;
+	int get_finger_pressed() const;
 
 	virtual Rect2 get_anchorable_rect() const;
 
