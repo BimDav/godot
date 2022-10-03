@@ -195,6 +195,10 @@ bool TouchScreenButton::is_pressed() const {
 	return finger_pressed != -1;
 }
 
+int TouchScreenButton::get_finger_pressed() const {
+	return finger_pressed;
+}
+
 void TouchScreenButton::set_action(const String &p_action) {
 	action = p_action;
 }
@@ -230,7 +234,7 @@ void TouchScreenButton::_input(const Ref<InputEvent> &p_event) {
 			if (finger_pressed == -1 || index == finger_pressed) {
 				if (_is_point_inside(coord)) {
 					if (finger_pressed == -1) {
-						_press(index);
+						_press(index, st->get_position());
 					}
 				} else {
 					if (finger_pressed != -1) {
@@ -249,7 +253,7 @@ void TouchScreenButton::_input(const Ref<InputEvent> &p_event) {
 				}
 
 				if (_is_point_inside(st->get_position())) {
-					_press(st->get_index());
+					_press(st->get_index(), st->get_position());
 				}
 			} else {
 				if (st->get_index() == finger_pressed) {
@@ -292,7 +296,7 @@ bool TouchScreenButton::_is_point_inside(const Point2 &p_point) {
 	return touched;
 }
 
-void TouchScreenButton::_press(int p_finger_pressed) {
+void TouchScreenButton::_press(int p_finger_pressed, Vector2 position) {
 	finger_pressed = p_finger_pressed;
 
 	if (action != StringName()) {
@@ -304,7 +308,7 @@ void TouchScreenButton::_press(int p_finger_pressed) {
 		get_tree()->input_event(iea);
 	}
 
-	emit_signal("pressed");
+	emit_signal("pressed", position);
 	update();
 }
 
@@ -396,6 +400,7 @@ void TouchScreenButton::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_passby_press_enabled"), &TouchScreenButton::is_passby_press_enabled);
 
 	ClassDB::bind_method(D_METHOD("is_pressed"), &TouchScreenButton::is_pressed);
+	ClassDB::bind_method(D_METHOD("get_finger_pressed"), &TouchScreenButton::get_finger_pressed);
 
 	ClassDB::bind_method(D_METHOD("_input"), &TouchScreenButton::_input);
 
@@ -409,7 +414,7 @@ void TouchScreenButton::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "action"), "set_action", "get_action");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "visibility_mode", PROPERTY_HINT_ENUM, "Always,TouchScreen Only"), "set_visibility_mode", "get_visibility_mode");
 
-	ADD_SIGNAL(MethodInfo("pressed"));
+	ADD_SIGNAL(MethodInfo("pressed", PropertyInfo(Variant::VECTOR2, "position")));
 	ADD_SIGNAL(MethodInfo("released"));
 
 	BIND_ENUM_CONSTANT(VISIBILITY_ALWAYS);
