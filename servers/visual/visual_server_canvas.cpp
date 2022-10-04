@@ -91,6 +91,7 @@ void VisualServerCanvas::_render_canvas_item(Item *p_canvas_item, const Transfor
 
 	if (!ci->visible) {
 		return;
+	}
 	if (!(ci->layer_mask & mask)) {
 		return;
 	}
