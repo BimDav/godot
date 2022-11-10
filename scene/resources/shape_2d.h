@@ -39,6 +39,7 @@ class Shape2D : public Resource {
 
 	RID shape;
 	real_t custom_bias;
+	real_t custom_friction = -1;
 
 protected:
 	static void _bind_methods();
@@ -49,6 +50,8 @@ public:
 
 	void set_custom_solver_bias(real_t p_bias);
 	real_t get_custom_solver_bias() const;
+	void set_custom_friction(real_t p_friction);
+	real_t get_custom_friction() const;
 
 	bool collide_with_motion(const Transform2D &p_local_xform, const Vector2 &p_local_motion, const Ref<Shape2D> &p_shape, const Transform2D &p_shape_xform, const Vector2 &p_shape_motion);
 	bool collide(const Transform2D &p_local_xform, const Ref<Shape2D> &p_shape, const Transform2D &p_shape_xform);

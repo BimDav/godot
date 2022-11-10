@@ -61,6 +61,7 @@ class Shape2DSW : public RID_Data {
 	Rect2 aabb;
 	bool configured;
 	real_t custom_bias;
+	real_t custom_friction = -1;
 
 	Map<ShapeOwner2DSW *, int> owners;
 
@@ -97,6 +98,9 @@ public:
 	void remove_owner(ShapeOwner2DSW *p_owner);
 	bool is_owner(ShapeOwner2DSW *p_owner) const;
 	const Map<ShapeOwner2DSW *, int> &get_owners() const;
+
+	_FORCE_INLINE_ void set_custom_friction(real_t p_friction) { custom_friction = p_friction; }
+	_FORCE_INLINE_ real_t get_custom_friction() const { return custom_friction; }
 
 	_FORCE_INLINE_ void get_supports_transformed_cast(const Vector2 &p_cast, const Vector2 &p_normal, const Transform2D &p_xform, Vector2 *r_supports, int &r_amount) const {
 		get_supports(p_xform.basis_xform_inv(p_normal).normalized(), r_supports, r_amount);

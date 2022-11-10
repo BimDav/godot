@@ -38,6 +38,15 @@ RID Shape2D::get_rid() const {
 	return shape;
 }
 
+void Shape2D::set_custom_friction(real_t p_friction) {
+	custom_friction = p_friction;
+	Physics2DServer::get_singleton()->shape_set_custom_friction(shape, custom_friction);
+}
+
+real_t Shape2D::get_custom_friction() const {
+	return custom_friction;
+}
+
 void Shape2D::set_custom_solver_bias(real_t p_bias) {
 	custom_bias = p_bias;
 	Physics2DServer::get_singleton()->shape_set_custom_solver_bias(shape, custom_bias);
@@ -99,6 +108,8 @@ Array Shape2D::collide_and_get_contacts(const Transform2D &p_local_xform, const 
 void Shape2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_custom_solver_bias", "bias"), &Shape2D::set_custom_solver_bias);
 	ClassDB::bind_method(D_METHOD("get_custom_solver_bias"), &Shape2D::get_custom_solver_bias);
+	ClassDB::bind_method(D_METHOD("set_custom_friction", "friction"), &Shape2D::set_custom_friction);
+	ClassDB::bind_method(D_METHOD("get_custom_friction"), &Shape2D::get_custom_friction);
 	ClassDB::bind_method(D_METHOD("collide", "local_xform", "with_shape", "shape_xform"), &Shape2D::collide);
 	ClassDB::bind_method(D_METHOD("collide_with_motion", "local_xform", "local_motion", "with_shape", "shape_xform", "shape_motion"), &Shape2D::collide_with_motion);
 	ClassDB::bind_method(D_METHOD("collide_and_get_contacts", "local_xform", "with_shape", "shape_xform"), &Shape2D::collide_and_get_contacts);
@@ -106,6 +117,7 @@ void Shape2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("draw", "canvas_item", "color"), &Shape2D::draw);
 
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "custom_solver_bias", PROPERTY_HINT_RANGE, "0,1,0.001"), "set_custom_solver_bias", "get_custom_solver_bias");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "custom_friction", PROPERTY_HINT_RANGE, "-1,100,0.01"), "set_custom_friction", "get_custom_friction");
 }
 
 bool Shape2D::is_collision_outline_enabled() {

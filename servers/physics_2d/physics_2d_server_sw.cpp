@@ -118,6 +118,12 @@ void Physics2DServerSW::shape_set_custom_solver_bias(RID p_shape, real_t p_bias)
 	shape->set_custom_bias(p_bias);
 }
 
+void Physics2DServerSW::shape_set_custom_friction(RID p_shape, real_t p_friction) {
+	Shape2DSW *shape = shape_owner.get(p_shape);
+	ERR_FAIL_COND(!shape);
+	shape->set_custom_friction(p_friction);
+}
+
 Physics2DServer::ShapeType Physics2DServerSW::shape_get_type(RID p_shape) const {
 	const Shape2DSW *shape = shape_owner.get(p_shape);
 	ERR_FAIL_COND_V(!shape, SHAPE_CUSTOM);
@@ -135,6 +141,12 @@ real_t Physics2DServerSW::shape_get_custom_solver_bias(RID p_shape) const {
 	const Shape2DSW *shape = shape_owner.get(p_shape);
 	ERR_FAIL_COND_V(!shape, 0);
 	return shape->get_custom_bias();
+}
+
+real_t Physics2DServerSW::shape_get_custom_friction(RID p_shape) const {
+	const Shape2DSW *shape = shape_owner.get(p_shape);
+	ERR_FAIL_COND_V(!shape, 0);
+	return shape->get_custom_friction();
 }
 
 void Physics2DServerSW::_shape_col_cbk(const Vector2 &p_point_A, const Vector2 &p_point_B, void *p_userdata) {

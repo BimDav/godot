@@ -135,6 +135,10 @@ void BulletPhysicsServer::shape_set_custom_solver_bias(RID p_shape, real_t p_bia
 	//WARN_PRINT("Bias not supported by Bullet physics engine");
 }
 
+void BulletPhysicsServer::shape_set_custom_friction(RID p_shape, real_t p_friction) {
+	//WARN_PRINT("Custom friction not supported by Bullet physics engine");
+}
+
 PhysicsServer::ShapeType BulletPhysicsServer::shape_get_type(RID p_shape) const {
 	ShapeBullet *shape = shape_owner.get(p_shape);
 	ERR_FAIL_COND_V(!shape, PhysicsServer::SHAPE_CUSTOM);
@@ -161,6 +165,11 @@ real_t BulletPhysicsServer::shape_get_margin(RID p_shape) const {
 
 real_t BulletPhysicsServer::shape_get_custom_solver_bias(RID p_shape) const {
 	//WARN_PRINT("Bias not supported by Bullet physics engine");
+	return 0.;
+}
+
+real_t BulletPhysicsServer::shape_get_custom_friction(RID p_shape) const {
+	//WARN_PRINT("Custom friction not supported by Bullet physics engine");
 	return 0.;
 }
 
