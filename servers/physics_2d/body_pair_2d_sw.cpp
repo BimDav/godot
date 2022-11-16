@@ -215,12 +215,8 @@ real_t combine_bounce(Body2DSW *A, Body2DSW *B) {
 	return CLAMP(A->get_bounce() + B->get_bounce(), 0, 1);
 }
 
-real_t combine_friction(Body2DSW *A, Body2DSW *B, int shape_A, int shape_B) {
-	real_t custom_friction_A = A->get_shape(shape_A)->get_custom_friction();
-	real_t friction_A = custom_friction_A >= 0 ? custom_friction_A : A->get_friction();
-	real_t custom_friction_B = B->get_shape(shape_B)->get_custom_friction();
-	real_t friction_B = custom_friction_B >= 0 ? custom_friction_B : B->get_friction();
-	return ABS(MIN(friction_A, friction_B));
+real_t combine_friction(Body2DSW *A, Body2DSW *B) {
+	return ABS(MIN(A->get_friction(), B->get_friction()));
 }
 
 bool BodyPair2DSW::setup(real_t p_step) {
@@ -480,7 +476,7 @@ void BodyPair2DSW::solve(real_t p_step) {
 		real_t jnOld = c.acc_normal_impulse;
 		c.acc_normal_impulse = MAX(jnOld + jn, 0.0f);
 
-		real_t friction = combine_friction(A, B, shape_A, shape_B);
+		real_t friction = combine_friction(A, B);
 
 		real_t jtMax = friction * c.acc_normal_impulse;
 		real_t jt = -vt * c.mass_tangent;

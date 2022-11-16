@@ -99,10 +99,6 @@ public:
 	virtual void shape_set_custom_solver_bias(RID p_shape, real_t p_bias);
 	/// Not supported
 	virtual real_t shape_get_custom_solver_bias(RID p_shape) const;
-	/// Not supported
-	virtual void shape_set_custom_friction(RID p_shape, real_t p_friction);
-	/// Not supported
-	virtual real_t shape_get_custom_friction(RID p_shape) const;
 
 	/* SPACE API */
 
