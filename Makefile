@@ -36,6 +36,11 @@ bin/godot.windows.opt.tools.64.exe:
 
 windows: bin/godot.windows.opt.64.exe bin/godot.windows.opt.tools.64.exe
 
+windows_editor: bin/godot.windows.opt.tools.64.exe
+
+windows_editor_clean:
+	rm bin/godot.windows.opt.tools.64.exe
+
 windows_clean:
 	rm bin/godot.windows.opt.64.exe bin/godot.windows.opt.tools.64.exe
 
@@ -64,11 +69,25 @@ ios:
 		zip -q -9 -r iphone.zip iphone
 
 ios_clean:
-	rm bin/libgodot.iphone.opt.arm.a bin/libgodot.iphone.opt.arm64.a
+	rm bin/libgodot.iphone.opt.arm.a bin/libgodot.iphone.opt.arm64.a bin/libgodot.iphone.release.fat.a
+	rm -rf iphone/
+	rm iphone.zip
+
+
+################ HTML ################
+
+html:
+	scons platform=javascript tools=no threads_enabled=yes target=release -j6 custom_modules=../sg-physics-2d/godot/modules/
+	scons platform=javascript tools=no threads_enabled=yes target=release_debug -j6 custom_modules=../sg-physics-2d/godot/modules/
+	scons platform=javascript tools=no threads_enabled=no target=release -j6 custom_modules=../sg-physics-2d/godot/modules/
+	scons platform=javascript tools=no threads_enabled=no target=release_debug -j6 custom_modules=../sg-physics-2d/godot/modules/
+
+html_clean:
+	rm bin/godot.javascript*
 
 
 ################ ALL #################
 
-clean: mac_clean windows_clean android_clean ios_clean
+clean: mac_clean windows_clean android_clean ios_clean html_clean
 
-all: mac windows android ios
+all: mac windows android ios html
