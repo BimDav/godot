@@ -50,6 +50,8 @@ windows_clean:
 android:
 	scons platform=android target=release tools=no android_arch=armv7 -j6 custom_modules=../sg-physics-2d/godot/modules/
 	scons platform=android target=release tools=no android_arch=arm64v8 -j6 custom_modules=../sg-physics-2d/godot/modules/
+	scons platform=android target=debug tools=no android_arch=armv7 -j6 custom_modules=../sg-physics-2d/godot/modules/
+	scons platform=android target=debug tools=no android_arch=arm64v8 -j6 custom_modules=../sg-physics-2d/godot/modules/
 	cd platform/android/java && ./gradlew generateGodotTemplates
 
 android_clean:
@@ -61,6 +63,8 @@ android_clean:
 ios:
 	scons p=iphone tools=no target=release arch=arm -j6 custom_modules=../sg-physics-2d/godot/modules/
 	scons p=iphone tools=no target=release arch=arm64 -j6 custom_modules=../sg-physics-2d/godot/modules/
+	#scons p=iphone tools=no ios_simulator=yes target=release arch=x86_64 -j6 custom_modules=../sg-physics-2d/godot/modules/
+	#lipo -create bin/libgodot.iphone.opt.arm.a bin/libgodot.iphone.opt.arm64.a bin/libgodot.iphone.opt.x86_64.simulator.a -output bin/libgodot.iphone.release.fat.a
 	lipo -create bin/libgodot.iphone.opt.arm.a bin/libgodot.iphone.opt.arm64.a -output bin/libgodot.iphone.release.fat.a
 	chmod +x bin/libgodot.iphone.release.fat.a
 	cp -R misc/dist/ios_xcode .
@@ -86,8 +90,19 @@ html_clean:
 	rm bin/godot.javascript*
 
 
+
+############## LINUX ################
+
+linux:
+	docker run --rm -it -v /Users/daviddehaene/Developer/godot:/godot -v /Users/daviddehaene/Developer/sg-physics-2d/godot/modules:/custom_modules  --platform linux/amd64 ubuntu bash -c "apt -y update; apt -y install clang build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev     libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm; cd /godot; scons platform=x11 use_llvm=yes target=release tools=no -j6 custom_modules=/custom_modules/"
+
+linux_clean:
+	rm bin/godot.x11.opt.64.llvm
+
+
+
 ################ ALL #################
 
-clean: mac_clean windows_clean android_clean ios_clean html_clean
+clean: mac_clean windows_clean android_clean ios_clean linux_clean html_clean
 
-all: mac windows android ios html
+all: mac windows android ios linux html
