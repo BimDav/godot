@@ -159,6 +159,7 @@ private:
 	StretchAspect stretch_aspect;
 	Size2i stretch_min;
 	real_t stretch_scale;
+	Size2 max_render_size;
 
 	void _update_font_oversampling(float p_ratio);
 	void _update_root_rect();
@@ -377,6 +378,9 @@ public:
 
 	void set_screen_stretch(StretchMode p_mode, StretchAspect p_aspect, const Size2 &p_minsize, real_t p_scale = 1.0);
 	StretchMode get_stretch_mode();
+
+	void set_max_render_size(const Size2 &p_max_render_size);
+	Size2 get_max_render_size();
 
 	void set_use_font_oversampling(bool p_oversampling);
 	bool is_using_font_oversampling() const;
