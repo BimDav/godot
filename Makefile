@@ -29,6 +29,7 @@ mac_export: bin/godot.osx.opt.x86_64
 	cp -r misc/dist/osx_template.app .
 	mkdir -p osx_template.app/Contents/MacOS
 	cp bin/godot.osx.opt.x86_64 osx_template.app/Contents/MacOS/godot_osx_release.64
+	cp ../godotsteam/sdk/redistributable_bin/osx/libsteam_api.dylib osx_template.app/Contents/MacOS/
 	#cp bin/godot.osx.opt.debug.universal osx_template.app/Contents/MacOS/godot_osx_debug.64
 	chmod +x osx_template.app/Contents/MacOS/godot_osx*
 	zip -q -9 -r osx.zip osx_template.app
@@ -59,8 +60,8 @@ windows: bin/godot.windows.opt.64.exe bin/godot.windows.opt.tools.64.exe
 windows_editor: bin/godot.windows.opt.tools.64.exe
 	mkdir -p bin/windows_editor
 	cp bin/godot.windows.opt.tools.64.exe bin/windows_editor/Godot.exe
-	cp ../godotsteam/sdk/redistributable_bin/osx/libsteam_api.dylib bin/windows_editor/
-	zip -q -9 -r windows_editor.zip bin/windows_editor
+	cp ../godotsteam/sdk/redistributable_bin/win64/steam_api64.dll bin/windows_editor/
+	cd bin && zip -q -9 -r windows_editor.zip windows_editor
 
 
 windows_editor_clean:
@@ -138,7 +139,7 @@ html_clean_hard:
 ############## LINUX ################
 
 linux:
-	docker run --rm -it -v /Users/daviddehaene/Developer/godot:/godot -v /Users/daviddehaene/Developer/sg-physics-2d/godot/modules:/custom_modules -v /Users/daviddehaene/Developer/godotsteam:/godotsteam --platform linux/amd64 ubuntu bash -c "apt -y update; apt -y install clang build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev     libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm; cd /godot; scons production=yes platform=x11 use_llvm=yes target=release tools=no -j6 custom_modules=/custom_modules/,/godotsteam"
+	docker run --rm -it --cpus 6 --memory 6g -v /Users/daviddehaene/Developer/godot:/godot -v /Users/daviddehaene/Developer/sg-physics-2d/godot/modules:/custom_modules -v /Users/daviddehaene/Developer/godotsteam:/godotsteam --platform linux/amd64 ubuntu bash -c "apt -y update; apt -y install clang build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev     libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm; cd /godot; scons production=yes platform=x11 use_llvm=yes target=release tools=no -j6 custom_modules=/custom_modules/,/godotsteam"
 
 linux_clean:
 	rm bin/godot.x11.opt.64.llvm
