@@ -1,13 +1,16 @@
 ############## MAC ##################
 
 bin/godot.osx.opt.x86_64:
-	scons production=yes arch=x86_64 platform=osx target=release tools=no -j6 custom_modules=../sg-physics-2d/godot/modules/,../godotsteam
+	scons production=yes arch=x86_64 platform=osx target=release tools=no -j6 custom_modules=../sg-physics-2d/godot/modules/,../godotsteam,../eosg
+	install_name_tool -change @rpath/libEOSSDK-Mac-Shipping.dylib @loader_path/libEOSSDK-Mac-Shipping.dylib bin/godot.osx.opt.x86_64 
 
 # bin/godot.osx.opt.arm64:
 # 	scons production=yes arch=arm64 platform=osx target=release tools=no -j6 custom_modules=../sg-physics-2d/godot/modules/ custom_modules=../godotsteam
 
 bin/godot.osx.opt.tools.x86_64:
-	scons production=yes arch=x86_64 platform=osx target=release_debug tools=yes -j6 custom_modules=../sg-physics-2d/godot/modules/,../godotsteam
+	scons production=yes arch=x86_64 platform=osx target=release_debug tools=yes -j6 custom_modules=../sg-physics-2d/godot/modules/,../godotsteam,../eosg
+	install_name_tool -change @rpath/libEOSSDK-Mac-Shipping.dylib @loader_path/libEOSSDK-Mac-Shipping.dylib bin/godot.osx.opt.tools.x86_64
+
 
 # bin/godot.osx.opt.tools.arm64:
 # 	scons production=yes arch=arm64 platform=osx target=release_debug tools=yes -j6 custom_modules=../sg-physics-2d/godot/modules/ custom_modules=../godotsteam
@@ -23,6 +26,7 @@ mac_editor: bin/godot.osx.opt.tools.x86_64
 	mkdir -p Godot.app/Contents/MacOS
 	cp bin/godot.osx.opt.tools.x86_64 Godot.app/Contents/MacOS/Godot
 	cp ../godotsteam/sdk/redistributable_bin/osx/libsteam_api.dylib Godot.app/Contents/MacOS/
+	cp ../eosg/thirdparty/eos-sdk/Bin/libEOSSDK-Mac-Shipping.dylib Godot.app/Contents/MacOS/
 	chmod +x Godot.app/Contents/MacOS/Godot
 
 mac_export: bin/godot.osx.opt.x86_64
@@ -30,6 +34,7 @@ mac_export: bin/godot.osx.opt.x86_64
 	mkdir -p osx_template.app/Contents/MacOS
 	cp bin/godot.osx.opt.x86_64 osx_template.app/Contents/MacOS/godot_osx_release.64
 	cp ../godotsteam/sdk/redistributable_bin/osx/libsteam_api.dylib osx_template.app/Contents/MacOS/
+	cp ../eosg/thirdparty/eos-sdk/Bin/libEOSSDK-Mac-Shipping.dylib osx_template.app/Contents/MacOS/
 	#cp bin/godot.osx.opt.debug.universal osx_template.app/Contents/MacOS/godot_osx_debug.64
 	chmod +x osx_template.app/Contents/MacOS/godot_osx*
 	zip -q -9 -r osx.zip osx_template.app
@@ -50,10 +55,10 @@ mac: mac_editor mac_export
 ############ WINDOWS #################
 
 bin/godot.windows.opt.64.exe:
-	scons production=yes platform=windows target=release tools=no -j6 custom_modules=../sg-physics-2d/godot/modules/,../godotsteam use_lto=yes
+	scons production=yes platform=windows target=release tools=no -j6 custom_modules=../sg-physics-2d/godot/modules/,../godotsteam,../eosg use_lto=yes
 
 bin/godot.windows.opt.tools.64.exe:
-	scons production=yes platform=windows target=release_debug tools=yes -j6 custom_modules=../sg-physics-2d/godot/modules/,../godotsteam use_lto=yes
+	scons production=yes platform=windows target=release_debug tools=yes -j6 custom_modules=../sg-physics-2d/godot/modules/,../godotsteam,../eosg use_lto=yes
 
 windows: bin/godot.windows.opt.64.exe bin/godot.windows.opt.tools.64.exe
 
@@ -61,6 +66,7 @@ windows_editor: bin/godot.windows.opt.tools.64.exe
 	mkdir -p bin/windows_editor
 	cp bin/godot.windows.opt.tools.64.exe bin/windows_editor/Godot.exe
 	cp ../godotsteam/sdk/redistributable_bin/win64/steam_api64.dll bin/windows_editor/
+	cp ../eosg/thirdparty/eos-sdk/Bin/EOSSDK-Win64-Shipping.dll bin/windows_editor/
 	cd bin && zip -q -9 -r windows_editor.zip windows_editor
 
 
